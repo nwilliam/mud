@@ -2,6 +2,12 @@
 Created on Nov 4, 2015
 
 @author: nwilliams
+
+
+I need to do a lot of things to get this thing working.
+@TODO: Create Rooms object.
+@TODO: Create a Body object to be in the room.
+@TODO: Create a Container Mixin class.
 '''
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 from twisted.internet import reactor

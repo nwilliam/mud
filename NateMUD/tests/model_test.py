@@ -5,7 +5,7 @@ Created on Nov 7, 2015
 '''
 import unittest
 
-from model.baseobject import BaseObject
+from models.baseobject import BaseObject
 
 class TestBaseObject(unittest.TestCase):
 
