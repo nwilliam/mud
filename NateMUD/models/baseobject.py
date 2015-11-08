@@ -64,7 +64,7 @@ class BaseObject(object):
         if self.desc:
             return self.desc
         else:
-            return 'This is %s' % (self.AShort())
+            return 'This is %s.' % (self.AShort())
     
 
         

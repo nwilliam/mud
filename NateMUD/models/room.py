@@ -69,11 +69,14 @@ class Room(object):
 
     def GetView(self,bodyRequesting):
         roomView = '[%s]\n' % self.title
-        roomView += '%s\n' % self.desc
+        roomView += '%s ' % self.desc
         roomView += self.GetObjectsView()
-        roomView += self.GetBodiesView(bodyRequesting)
+        roomView += '\n' + self.GetBodiesView(bodyRequesting)
         #roomView += self.GetCardinalExitsView()
         return roomView
+    
+    def GetContents(self):
+        return [obj for obj in self.contents]
 
     def GetObjects(self):
         return [obj for obj in self.contents if not isinstance(obj,Body)]

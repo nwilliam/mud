@@ -5,7 +5,6 @@ Created on Nov 4, 2015
 
 
 I need to do a lot of things to get this thing working.
-@TODO: Create Rooms object.
 @TODO: Create a Container Mixin class.
 '''
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
@@ -30,8 +29,17 @@ class MudClient(WebSocketServerProtocol):
             self.server.onLogin(self,msg)
         elif msg.startswith("'"):
             self.server.Wall('%s says, "%s"' % (self.body.Name(),msg.strip("'")))
-        elif msg in 'lL':
-            self.Tell(self.body.location.GetView(self.body))
+        elif msg.startswith('l'):
+            if len(msg.split(' ')) > 1:
+                for obj in self.body.location.GetContents():
+                    if obj.Noun() == msg.split(' ')[1]:
+                        print 'Found: %s' % obj.Noun()
+                        self.Tell(obj.Desc())
+                        break
+                else:
+                    self.Tell('I don\'t see %s here.' % msg.split(' ')[1])
+            else:
+                self.Tell(self.body.location.GetView(self.body))
         
     
     def connectionLost(self, reason):
