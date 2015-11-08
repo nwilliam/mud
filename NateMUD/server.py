@@ -3,6 +3,11 @@ Created on Nov 4, 2015
 
 @author: nwilliams
 '''
+import pickle
+
+from models.body import Body
+from models.room import Room
+from models.baseobject import BaseObject
 
 class ServerClass(object):
     '''
@@ -12,6 +17,9 @@ class ServerClass(object):
 
     def __init__(self):
         self.clients = []
+        with open('./world/rooms/staff/default/000000.room') as f:
+            self.default_room = pickle.load(f)
+
         
     def onOpen(self,client):
         if not client in self.clients:
@@ -19,16 +27,23 @@ class ServerClass(object):
             self.clients.append(client)
             print 'Registered Client: %s' % client.peer
         
-        if not client.name:
+        if not client.LoginDone:
             client.Tell('Enter a name:')
     
     def onLogin(self,client,msg):
         for c in self.clients:
-            if c.name == msg or len(msg)>16 or len(msg) < 3:
+            if not c.body:
+                continue
+            
+            if c.body.Name == msg.title() or len(msg)>16 or len(msg) < 3:
                 client.Tell('That name is not acceptable, please try again.')
                 return
+
+            
         client.Tell('Welcome, %s.' % msg)
-        client.name = msg
+        client.body = Body(client,name=msg,location=self.default_room)
+        client.body.location.AddToContents(client.body)
+        client.Tell(client.body.GetView())
         client.LoginDone = True
             
             

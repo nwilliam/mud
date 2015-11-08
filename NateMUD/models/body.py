@@ -8,6 +8,7 @@ from models.baseobject import BaseObject
 class Body(BaseObject):
     '''
     A Body is a Mobile Object (MOB) or a Player.
+    
     Should every Body have a client? Yes I think so.  This lets me
     have the ability to possess non-player objects and have them DoStuff.
     There's a lot of things that will be added to a Body, but for
@@ -23,15 +24,30 @@ class Body(BaseObject):
 
     def __init__(self, client=None,name='unnamed',pretitle='',posttitle='',
                  desc_string='',location=None,**kwargs):
-        super(Body,self).__init__(noun=name.Title(),adjs='',**kwargs)
+        super(Body,self).__init__(noun=name.title(),adjs='',**kwargs)
         self.client = client
-        self.name = name.Title()
-        self.pretitle = pretitle.Title()
-        self.posttitle = posttitle.Title()
+        self.name = name.title()
+        self.pretitle = pretitle.title()
+        self.posttitle = posttitle.title()
         self.desc_string = desc_string
         self.location = location
 
+    def GetView(self):
+        return self.location.GetView(self)
+
+    def Possess(self,client):
+        self.client = client
+    
+    def Unpossess(self,client):
+        self.client = None
+    
     def Name(self):
+        if self.name:
+            return self.name
+        else:
+            return 'Unnamed'
+    
+    def Noun(self):
         if self.name:
             return self.name
         else:
@@ -48,7 +64,7 @@ class Body(BaseObject):
         # I'm abstracting this a bit higher to reduce calls to
         # Body.Client.Tell() - also this can let me do some
         # formatting higher up if I need to.  Also, we can intercept
-        # errors here and not try to do a Tell to a mob. This doesn't even
+        # errors here and not try to do a Tell to a mob.
         if self.client:
             self.client.Tell(msg,**kwargs)
             

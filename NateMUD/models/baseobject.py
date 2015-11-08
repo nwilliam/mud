@@ -10,7 +10,7 @@ class BaseObject(object):
     '''
 
 
-    def __init__(self, noun='rock', adjs='very large', 
+    def __init__(self, fullname='', noun='rock', adjs='very large', 
                  article=None, short=None, desc=None, 
                  isPlural=False, **kwargs):
         self.noun = noun
@@ -19,7 +19,11 @@ class BaseObject(object):
         self.short = short
         self.desc = desc
         self.isPlural = isPlural
-    
+        if fullname:
+            obj = fullname.strip(' ').split(' ')
+            self.noun = obj.pop()
+            self.adjs = obj
+                
     def Adjs(self):
         if self.adjs:
             return self.adjs
@@ -39,14 +43,22 @@ class BaseObject(object):
             return self.article
         elif self.isPlural:
             return 'some'
+        elif self.Short()[0] in 'aeiou':
+            return 'an'
         else:
-            return 'an' if self.Short()[0] in 'aeiou' else 'a'
+            return 'a'
+    
+    def Noun(self):
+        if self.noun:
+            return self.noun
+        else:
+            return 'thing'
        
     def Short(self):
         if self.short:
             return self.short
         else:
-            return ' '.join([' '.join(self.adjs),self.noun]).strip()
+            return ' '.join([' '.join(self.adjs),self.Noun()]).strip()
     
     def Desc(self):
         if self.desc:
