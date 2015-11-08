@@ -112,5 +112,3 @@ class Room(object):
     
     def Destroy(self):
         pass
-            
-                     

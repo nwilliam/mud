@@ -6,8 +6,6 @@ Created on Nov 4, 2015
 import pickle
 
 from models.body import Body
-from models.room import Room
-from models.baseobject import BaseObject
 
 class ServerClass(object):
     '''
