@@ -10,7 +10,7 @@ class BaseObject(object):
     '''
 
 
-    def __init__(self, fullname='', noun='rock', adjs='very large', 
+    def __init__(self, fullname='', noun='rock', adjs='', 
                  article=None, short=None, desc=None, 
                  isPlural=False, isVisible=True, length=6, width=6, height=6,
                  weight=10,**kwargs):

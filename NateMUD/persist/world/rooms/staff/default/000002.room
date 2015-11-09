@@ -1,0 +1,47 @@
+ccopy_reg
+_reconstructor
+p0
+(cmodels.room
+Room
+p1
+c__builtin__
+object
+p2
+Ntp3
+Rp4
+(dp5
+S'biome'
+p6
+S'deciduous forest'
+p7
+sS'temperature'
+p8
+I72
+sS'title'
+p9
+S'Northerly Room'
+p10
+sS'isCovered'
+p11
+I00
+sS'element'
+p12
+NsS'isIndoors'
+p13
+I00
+sS'weather'
+p14
+NsS'address'
+p15
+S'./persist/world/rooms/staff/default/000002.room'
+p16
+sS'desc'
+p17
+S"An ugly bear's head hangs from the wall above dark-toned hardwood flooring."
+p18
+sS'contents'
+p19
+NsS'size'
+p20
+I64
+sb.

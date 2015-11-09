@@ -40,7 +40,16 @@ class MudClient(WebSocketServerProtocol):
                     self.Tell('I don\'t see %s here.' % msg.split(' ')[1])
             else:
                 self.Tell(self.body.location.GetView(self.body))
-        
+        elif msg.startswith('go'):
+            splitMsg = msg.split(' ')
+            if len(splitMsg) > 1:
+                for obj in self.body.location.GetExits():
+                    if splitMsg[1] == obj.Noun():
+                        obj.DoExit(self.body)
+                        break
+            else:
+                self.Tell('Go where?')
+                
     
     def connectionLost(self, reason):
         WebSocketServerProtocol.connectionLost(self, reason)
