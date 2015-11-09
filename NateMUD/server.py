@@ -6,6 +6,8 @@ Created on Nov 4, 2015
 import pickle
 
 from models.body import Body
+from models.baseobject import BaseObject
+from models.room import Room
 
 class ServerClass(object):
     '''
@@ -15,9 +17,12 @@ class ServerClass(object):
 
     def __init__(self):
         self.clients = []
-        with open('./world/rooms/staff/default/000000.room') as f:
-            self.default_room = pickle.load(f)
-
+        self.default_room = Room(title='Welcome Room', desc='A small desk with a welcome sign sits in the middle of a lushly carpeted, dark-wood paneled room. A raging fire burns in the hearth.')
+        self.default_room.AddToContents(BaseObject('goddamned monkey',desc='This goddamned monkey keeps running the fuck around.  Someone seriously need to shoot this little asshole.'))
+        self.default_room.AddToContents(BaseObject('raging fire',desc='A warm fire crackles away in the hearth, lending light and warmth to the already cozy room.',isVisible=False))
+        self.default_room.AddToContents(BaseObject('hearth',desc='A warm fire crackles away in the hearth, lending light and warmth to the already cozy room.',isVisible=False))
+        self.default_room.AddToContents(Body(name='Arthur', pretitle='Sir',posttitle=', Vogon Poet-Lauriete'))
+        self.default_room.Persist()
         
     def onOpen(self,client):
         if not client in self.clients:

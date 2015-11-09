@@ -82,7 +82,7 @@ class Room(object):
         return [obj for obj in self.contents if not isinstance(obj,Body)]
     
     def GetObjectsView(self):
-        objShorts = [obj.AShort() for obj in self.GetObjects()]
+        objShorts = [obj.AShort() for obj in self.GetObjects() if obj.isVisible]
         return ('You also see %s.' % self.BuildCommaSeperatedList(objShorts)) if objShorts else ''
     
     def GetBodies(self):

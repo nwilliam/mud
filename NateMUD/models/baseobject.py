@@ -12,13 +12,24 @@ class BaseObject(object):
 
     def __init__(self, fullname='', noun='rock', adjs='very large', 
                  article=None, short=None, desc=None, 
-                 isPlural=False, **kwargs):
+                 isPlural=False, isVisible=True, length=6, width=6, height=6,
+                 weight=10,**kwargs):
         self.noun = noun
         self.adjs = adjs.split(' ')
         self.article = article
         self.short = short
         self.desc = desc
         self.isPlural = isPlural
+        self.isVisible = isVisible
+        self.length = length
+        self.width = width
+        self.height = height
+        self.weight = weight
+        
+        self.size = self.length * self.width * self.height
+        self.linearsize = self.length + self.width + self.height
+        self.density = self.weight / self.size
+        
         if fullname:
             obj = fullname.strip(' ').split(' ')
             self.noun = obj.pop()
@@ -64,7 +75,7 @@ class BaseObject(object):
         if self.desc:
             return self.desc
         else:
-            return 'This is %s.' % (self.AShort())
+            return 'There doesn\'t seem to be anything special about %s.' % (self.AShort())
     
 
         

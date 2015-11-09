@@ -24,7 +24,8 @@ class Body(BaseObject):
 
     def __init__(self, client=None,name='unnamed',pretitle='',posttitle='',
                  desc_string='',location=None,**kwargs):
-        super(Body,self).__init__(noun=name.title(),adjs='',**kwargs)
+        super(Body,self).__init__(noun=name.title(),adjs='', length=20, 
+                                  width=15, height=72, weight=160, **kwargs)
         self.client = client
         self.name = name.title()
         self.pretitle = pretitle.title()
@@ -58,7 +59,10 @@ class Body(BaseObject):
         return ''
     
     def FullName(self):
-        return '%s %s %s' % (self.pretitle,self.Name(),self.posttitle)
+        if self.posttitle.startswith(','):
+            return '%s %s%s' % (self.pretitle,self.Name(),self.posttitle)
+        else:
+            return '%s %s %s' % (self.pretitle,self.Name(),self.posttitle)
         
     def Tell(self,msg,**kwargs):
         # I'm abstracting this a bit higher to reduce calls to
