@@ -12,14 +12,13 @@ from twisted.internet import reactor
 
 from server import Server
 
-
 class MudClient(WebSocketServerProtocol):
     def onOpen(self):
         self.isAdmin = True
         self.server = Server
         self.LoginDone = False
         self.body = None
-        Server.onOpen(self)
+        self.server.onOpen(self)
     
     def onLogin(self):
         pass
@@ -65,6 +64,7 @@ class MudServerFactory(WebSocketServerFactory):
         WebSocketServerFactory.__init__(self,url)
 
 if __name__ == '__main__':
+    
     factory = MudServerFactory('ws://localhost:9000')
     listenWS(factory)
     reactor.run() #@UndefinedVariable

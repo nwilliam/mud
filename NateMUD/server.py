@@ -5,10 +5,12 @@ Created on Nov 4, 2015
 '''
 import pickle
 
-from models.body import Body
-from models.exit import CardinalExit,Exit
-from models.room import Room
 from models.baseobject import BaseObject
+from models.body import Body
+from models.exit import CardinalExit, Exit
+from models.room import Room
+from world.world import WorldManager
+
 
 class ServerClass(object):
     '''
@@ -18,6 +20,7 @@ class ServerClass(object):
 
     def __init__(self):
         self.clients = []
+        self.world = WorldManager(self)
         
         with open('persist/world/rooms/staff/default/000000.room') as f:
             self.default_room=pickle.load(f)

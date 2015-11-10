@@ -23,7 +23,7 @@ class Exit(BaseObject):
         
         if dest:
             last.RemoveFromContents(actor)
-            last.Tell('%s just went %s.' % (actor.Name(),self.noun))
+            last.Tell('%s just went %s.' % (actor.Name(),self.Noun()))
         
             dest.Tell('%s just arrived.' % actor.Name())
             dest.AddToContents(actor)
@@ -35,7 +35,7 @@ class Exit(BaseObject):
     def Desc(self):
         dest = WorldManager.GetRoom(self.destination)
         if dest:
-            return 'Through the %s you see...\n%s' %(self.Noun(),dest.GetView())
+            return 'Through the %s you see...\n%s' % (self.Noun(),dest.GetView())
         else:
             return 'A mysterious fog blocks your view.'
     

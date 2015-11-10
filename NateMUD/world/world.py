@@ -9,12 +9,13 @@ import pickle
 
 class RoomManager(object):
     '''
-    This thing is scary.
+    This thing is scary.  There are a lot of ways for this to break.
     
     There's only one WorldManager instance.
     '''
-    def __init__(self):
+    def __init__(self,server):
         self.rooms = dict()
+        self.server = server #This is only here to support Error Handling
     
     def GetRoom(self,address):
         
@@ -32,11 +33,10 @@ class RoomManager(object):
         if not room:
             print "Unable to unpickle: %s" % loc
             #Still no?  That sucks.
-            #Server.WallAdmin('Unable to unpickle: %s' % address)
+            self.server.WallAdmin('Unable to unpickle: %s' % address)
         else:
             self.Register(address, room)
-            
-        return room    
+            return room    
         
     def Register(self,address,room):
         self.rooms[address] = room

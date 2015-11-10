@@ -7,12 +7,33 @@ from models.baseobject import BaseObject
 
 class Body(BaseObject):
     '''
+    Top-level Class inherited by Mob, Being, and Player.
+    client=None,name='unnamed',pretitle='',posttitle='',
+    desc_string='',location=None,**kwargs
+    '''
+    '''
     A Body is a Mobile Object (MOB) or a Player.
     
     Should every Body have a client? Yes I think so.  This lets me
     have the ability to possess non-player objects and have them DoStuff.
     There's a lot of things that will be added to a Body, but for
     now we'll just keep the basics and template the rest.
+    
+    I think I should branch this into subclasses. 
+    Body -> Being -> Player
+    Body -> Mob
+    
+    NPC's and Players have names and the ability to have a Client.  They also
+    have pretitles and post titles.  How titilating.  Do NPCs and Players have
+    anything different?  I think only scripts.  I take that back, I want the
+    ability to have environmental scripts on players.
+    
+    Is there anything different?  Yes, there is.  Persist().  
+    
+    I think mobs may need to be a subclass for movement and because they don't
+    have names.
+    
+    I'm going to keep self.client in Body.  I want to be able to possess Mobs.
     
     I think I want to treat Bodies like BaseObjects.  That way I can call
     all of the BaseObject methods on it if I need to.  I'll just override

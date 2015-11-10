@@ -10,7 +10,7 @@ class BaseObject(object):
     '''
 
 
-    def __init__(self, fullname='', noun='rock', adjs='', 
+    def __init__(self, quick='', noun='rock', adjs='', 
                  article=None, short=None, desc=None, 
                  isPlural=False, isVisible=True, length=6, width=6, height=6,
                  weight=10,**kwargs):
@@ -30,8 +30,8 @@ class BaseObject(object):
         self.linearsize = self.length + self.width + self.height
         self.density = self.weight / self.size
         
-        if fullname:
-            obj = fullname.strip(' ').split(' ')
+        if quick:
+            obj = quick.strip(' ').split(' ')
             self.noun = obj.pop()
             self.adjs = obj
                 
