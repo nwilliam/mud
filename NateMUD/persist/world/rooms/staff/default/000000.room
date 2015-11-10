@@ -33,7 +33,7 @@ sS'weather'
 p14
 NsS'address'
 p15
-S'./persist/world/rooms/staff/default/000000.room'
+S'.staff/default/000000.room'
 p16
 sS'desc'
 p17
@@ -78,7 +78,7 @@ aS'wooden'
 p36
 asS'destination'
 p37
-S'rooms/staff/default/000001'
+S'staff/default/000001'
 p38
 sS'height'
 p39
@@ -128,7 +128,7 @@ sg33
 (lp52
 g30
 asg37
-S'rooms/staff/default/000002'
+S'staff/default/000002'
 p53
 sg39
 I6

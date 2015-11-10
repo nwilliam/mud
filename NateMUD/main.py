@@ -26,11 +26,12 @@ class MudClient(WebSocketServerProtocol):
     def onMessage(self,msg,isBinary):
         if not self.LoginDone:
             self.server.onLogin(self,msg)
-        elif msg.startswith("'"):
+        elif msg.startswith("'"): #say 
             self.server.Wall('%s says, "%s"' % (self.body.Name(),msg.strip("'")))
-        elif msg.startswith('l'):
+        
+        elif msg.startswith('l'): #look
             if len(msg.split(' ')) > 1:
-                for obj in self.body.location.GetContents():
+                for obj in self.body.GetRoom().GetContents():
                     if obj.Noun() == msg.split(' ')[1]:
                         print 'Found: %s' % obj.Noun()
                         self.Tell(obj.Desc())
@@ -38,16 +39,20 @@ class MudClient(WebSocketServerProtocol):
                 else:
                     self.Tell('I don\'t see %s here.' % msg.split(' ')[1])
             else:
-                self.Tell(self.body.location.GetView(self.body))
-        elif msg.startswith('go'):
+                self.Tell(self.body.GetRoom().GetView(self.body))
+                
+        elif msg.startswith('go'): #go
             splitMsg = msg.split(' ')
             if len(splitMsg) > 1:
-                for obj in self.body.location.GetExits():
+                for obj in self.body.GetRoom().GetExits():
                     if splitMsg[1] == obj.Noun():
                         obj.DoExit(self.body)
                         break
             else:
                 self.Tell('Go where?')
+                
+        else:
+            self.Tell('What?  I don\'t understand what "%s" means.' % msg)
                 
     
     def connectionLost(self, reason):

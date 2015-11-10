@@ -13,9 +13,9 @@ class RoomManager(object):
     
     There's only one WorldManager instance.
     '''
-    def __init__(self,server):
+    def __init__(self):
         self.rooms = dict()
-        self.server = server #This is only here to support Error Handling
+        # self.server = server #This is only here to support Error Handling
     
     def GetRoom(self,address):
         
@@ -23,7 +23,7 @@ class RoomManager(object):
         
         if not room:
             #Try to unpickle it.
-            loc = './persist/world/' + address + '.room'
+            loc = './persist/world/room/' + address + '.room'
             try:
                 f = open(loc,'r')
                 room = pickle.load(f)
@@ -33,7 +33,7 @@ class RoomManager(object):
         if not room:
             print "Unable to unpickle: %s" % loc
             #Still no?  That sucks.
-            self.server.WallAdmin('Unable to unpickle: %s' % address)
+            #self.server.WallAdmin('Unable to unpickle: %s' % address)
         else:
             self.Register(address, room)
             return room    

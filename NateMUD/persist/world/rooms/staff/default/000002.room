@@ -33,7 +33,7 @@ sS'weather'
 p14
 NsS'address'
 p15
-S'./persist/world/rooms/staff/default/000002.room'
+S'staff/default/000002.room'
 p16
 sS'desc'
 p17

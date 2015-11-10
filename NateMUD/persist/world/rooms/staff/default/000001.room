@@ -31,7 +31,7 @@ p13
 I72
 sS'address'
 p14
-S'persist/world/rooms/staff/default/000001.room'
+S'staff/default/000001.room'
 p15
 sS'element'
 p16
@@ -70,7 +70,7 @@ p31
 I00
 sS'destination'
 p32
-S'rooms/staff/default/000000'
+S'staff/default/000000'
 p33
 sS'height'
 p34

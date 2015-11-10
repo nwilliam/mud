@@ -3,12 +3,14 @@ Created on Nov 8, 2015
 
 @author: nwilliams
 '''
-from models.body import Body
-from models.exit import Exit,CardinalExit
 import pickle
 
+from models.body import Body
+from models.container import Container
+from models.exit import Exit, CardinalExit
 
-class Room(object):
+
+class Room(Container):
     '''
     Room is just that, a room.  Room needs to be a container as well (Mixin).
     Should room be a BaseObject?  I don't think it should.  A room doesn't have
@@ -42,7 +44,7 @@ class Room(object):
     def __init__(self,title='The Nebula',desc='The fires of creation around you, writhing gases and colors stretching into infinity.  You float through the awe-inspiring display with nary a way to escape or exit.',
                  contents=None,size=room_sizes['medium'],weather=None,element=None,
                  temperature=72,biome='deciduous forest',isIndoors=False,isCovered=False,
-                 address='./persist/world/rooms/staff/default/000000.room',**kwargs):
+                 address='staff/default/000000.room',**kwargs):
         super(Room,self).__init__(**kwargs)
         self.title=title.title() #lol
         self.desc=desc
@@ -56,26 +58,6 @@ class Room(object):
         self.isCovered = isCovered
         self.address = address
 
-    def AddToContents(self,obj):
-        if not self.contents:
-            self.contents = []
-        if obj:
-            self.contents.append(obj)
-        if isinstance(obj,Body):
-            for person in self.GetBodies():
-                if person.client and person != obj:
-                    person.Tell('%s just arrived.' % obj.Name())
-        else:
-            for person in self.GetBodies():
-                if person.client:
-                    person.Tell('%s just fell from the sky!' % obj.AShort())    
-    
-    def RemoveFromContents(self,obj):
-        if obj:
-            if obj in self.GetContents():
-                self.contents.remove(obj)
-
-    
     def GetView(self,bodyRequesting=None):
         roomView = '[%s]\n' % self.title
         roomView += '%s ' % self.desc
@@ -85,12 +67,6 @@ class Room(object):
             roomView += self.GetExitsView()
         return roomView
     
-    def GetContents(self):
-        if self.contents:
-            return self.contents
-        else:
-            return []
-
     def GetObjects(self):
         return [obj for obj in self.GetContents() if not isinstance(obj,Body)]
     
@@ -129,7 +105,6 @@ class Room(object):
         filename = open(self.address,'w')
         pickle.dump(self,filename)
         
-    
     def Destroy(self):
         pass
     

@@ -4,8 +4,11 @@ Created on Nov 7, 2015
 @author: nwilliams
 '''
 from models.baseobject import BaseObject
+from models.container import Container
+from world.world import WorldManager
 
-class Body(BaseObject):
+
+class Body(BaseObject, Container):
     '''
     Top-level Class inherited by Mob, Being, and Player.
     client=None,name='unnamed',pretitle='',posttitle='',
@@ -44,7 +47,7 @@ class Body(BaseObject):
 
 
     def __init__(self, client=None,name='unnamed',pretitle='',posttitle='',
-                 desc_string='',location=None,**kwargs):
+                 desc_string='',location='staff/default/000000',**kwargs):
         super(Body,self).__init__(noun=name.title(),adjs='', length=20, 
                                   width=15, height=72, weight=160, **kwargs)
         self.client = client
@@ -52,10 +55,25 @@ class Body(BaseObject):
         self.pretitle = pretitle.title()
         self.posttitle = posttitle.title()
         self.desc_string = desc_string
-        self.location = location
+        self.location = location #Location needs to be stored as an address. :\
+        self.room = WorldManager.GetRoom(self.location) 
+
+    def Move(self,destination):
+        if isinstance(destination,str):
+            self.location = destination
+            self.room = WorldManager.GetRoom(destination)
+        else:
+            self.room = destination
+            self.location = destination.address
+
+    def GetRoom(self):
+        if self.room:
+            return self.room
+        else:
+            return WorldManager.GetRoom(self.location)
 
     def GetView(self):
-        return self.location.GetView(self)
+        return self.GetRoom().GetView(self)
 
     def Possess(self,client):
         self.client = client
@@ -93,7 +111,9 @@ class Body(BaseObject):
         if self.client:
             self.client.Tell(msg,**kwargs)
             
-    
+    def Persist(self):
+        pass
+        #BE SURE TO DUMP SELF.ROOM OR YOU RISK SAVING THE WHOLE GODDAMN SHEBANG
 
     
         

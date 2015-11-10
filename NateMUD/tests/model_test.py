@@ -75,20 +75,20 @@ class TestRooms(unittest.TestCase):
     def testRoomGetObjectsViewWithOneObject(self):
         room = Room()
         room.AddToContents(BaseObject())
-        self.assertEqual(room.GetObjectsView(),'You also see a very large rock.')
+        self.assertEqual(room.GetObjectsView(),'You also see a rock.')
 
     def testRoomGetObjectsViewWithTwoObjects(self):
         room = Room()
         room.AddToContents(BaseObject())
         room.AddToContents(BaseObject('tiny rock'))
-        self.assertEqual(room.GetObjectsView(),'You also see a very large rock and a tiny rock.')
+        self.assertEqual(room.GetObjectsView(),'You also see a rock and a tiny rock.')
         
     def testRoomGetObjectsViewWithThreeObjects(self):
         room = Room()
         room.AddToContents(BaseObject())
         room.AddToContents(BaseObject('tiny rock'))
         room.AddToContents(BaseObject('goddamned monkey'))
-        self.assertEqual(room.GetObjectsView(),'You also see a very large rock, a tiny rock and a goddamned monkey.') 
+        self.assertEqual(room.GetObjectsView(),'You also see a rock, a tiny rock and a goddamned monkey.') 
     
     def testRoomGetBodiesViewWithOneBody(self):
         room = Room()
@@ -101,7 +101,7 @@ class TestRooms(unittest.TestCase):
         me = Body(name='Me')
         room.AddToContents(me)
         room.AddToContents(Body(name='Steve'))
-        self.assertEqual(room.GetBodiesView(me),'Also here: Steve.')   
+        self.assertEqual(room.GetBodiesView(me),'\nAlso here: Steve.')   
 
     def testRoomGetBodiesViewWithThreeBodies(self):
         room = Room()
@@ -109,7 +109,7 @@ class TestRooms(unittest.TestCase):
         room.AddToContents(me)
         room.AddToContents(Body(name='Steve'))
         room.AddToContents(Body(name='Frank'))
-        self.assertEqual(room.GetBodiesView(me),'Also here: Steve and Frank.')
+        self.assertEqual(room.GetBodiesView(me),'\nAlso here: Steve and Frank.')
 
     def testRoomGetBodiesViewWithFourBodies(self):
         room = Room()
@@ -118,7 +118,7 @@ class TestRooms(unittest.TestCase):
         room.AddToContents(Body(name='Steve'))
         room.AddToContents(Body(name='Frank'))
         room.AddToContents(Body(name='Bob'))        
-        self.assertEqual(room.GetBodiesView(me),'Also here: Steve, Frank and Bob.')   
+        self.assertEqual(room.GetBodiesView(me),'\nAlso here: Steve, Frank and Bob.')   
                     
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

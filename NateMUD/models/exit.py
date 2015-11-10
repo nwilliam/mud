@@ -18,16 +18,17 @@ class Exit(BaseObject):
         self.arrivalView=arrivalView
         
     def DoExit(self,actor):
-        last = actor.location
+        last = actor.GetRoom()
         dest = WorldManager.GetRoom(self.destination)
         
         if dest:
+            #I need 
             last.RemoveFromContents(actor)
             last.Tell('%s just went %s.' % (actor.Name(),self.Noun()))
         
             dest.Tell('%s just arrived.' % actor.Name())
             dest.AddToContents(actor)
-            actor.location = dest
+            actor.Move(self.destination)
             actor.Tell(actor.GetView())
         else:
             actor.Tell('A mysterious force blocks your exit.')
