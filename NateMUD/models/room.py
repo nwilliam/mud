@@ -44,7 +44,7 @@ class Room(Container):
     def __init__(self,title='The Nebula',desc='The fires of creation around you, writhing gases and colors stretching into infinity.  You float through the awe-inspiring display with nary a way to escape or exit.',
                  contents=None,size=room_sizes['medium'],weather=None,element=None,
                  temperature=72,biome='deciduous forest',isIndoors=False,isCovered=False,
-                 address='staff/default/000000.room',**kwargs):
+                 address='staff/default/000000',**kwargs):
         super(Room,self).__init__(**kwargs)
         self.title=title.title() #lol
         self.desc=desc
@@ -102,7 +102,7 @@ class Room(Container):
         return returnString
     
     def Persist(self):
-        filename = open(self.address,'w')
+        filename = open('./persist/world/rooms/' + self.address + '.room','w')
         pickle.dump(self,filename)
         
     def Destroy(self):

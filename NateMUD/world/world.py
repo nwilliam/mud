@@ -23,7 +23,7 @@ class RoomManager(object):
         
         if not room:
             #Try to unpickle it.
-            loc = './persist/world/room/' + address + '.room'
+            loc = './persist/world/rooms/' + address + '.room'
             try:
                 f = open(loc,'r')
                 room = pickle.load(f)
@@ -34,6 +34,8 @@ class RoomManager(object):
             print "Unable to unpickle: %s" % loc
             #Still no?  That sucks.
             #self.server.WallAdmin('Unable to unpickle: %s' % address)
+            from models.room import Room
+            return Room(title='Error Has Occured Room', desc='Congrats, you broke the game and found somewhere that doesn\'t exist.  Go you.  Jerk.')
         else:
             self.Register(address, room)
             return room    

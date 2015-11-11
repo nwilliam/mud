@@ -59,12 +59,8 @@ class Body(BaseObject, Container):
         self.room = WorldManager.GetRoom(self.location) 
 
     def Move(self,destination):
-        if isinstance(destination,str):
-            self.location = destination
-            self.room = WorldManager.GetRoom(destination)
-        else:
-            self.room = destination
-            self.location = destination.address
+        self.location = destination
+        self.room = WorldManager.GetRoom(destination)
 
     def GetRoom(self):
         if self.room:
