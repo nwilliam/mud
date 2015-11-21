@@ -68,9 +68,9 @@ class ServerClass(object):
         else:    
             client.body = Body(client,name=msg,location=self.default_room.address)
         
+        print client.body.Name()
         client.body.Move(self.default_room.address)
         client.body.GetRoom().AddToContents(client.body)
-        client.Tell('Welcome, %s.' % client.body.Name())
         client.body.GetRoom().Tell('%s just arrived.' % client.body.Name())
         client.Tell(client.body.GetView())
         client.LoginDone = True

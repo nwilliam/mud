@@ -60,6 +60,8 @@ class MudClient(WebSocketServerProtocol):
         self.server.onClose(self,reason)
     
     def Tell(self,msg):
+        #Le Hack.
+        msg = msg.replace('\n','<br />')
         self.sendMessage(msg)
 
 class MudServerFactory(WebSocketServerFactory):
