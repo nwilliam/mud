@@ -57,7 +57,15 @@ class TestBaseObject(unittest.TestCase):
         
     def testBaseObjectFullNoAdjs(self):
         obj = BaseObject('stone')
-        self.assertEqual(obj.AShort(),'a stone')        
+        self.assertEqual(obj.AShort(),'a stone')
+    
+    def testBaseObjectisaBaseObject(self):
+        obj = BaseObject('stone')
+        self.assertEqual(obj.isa('baseobject'),True)
+        
+    def testBaseObjectisaBody(self):
+        obj = BaseObject('stone')
+        self.assertEqual(obj.isa('body'), False)        
 
 class TestRooms(unittest.TestCase):
     def testRoomAddToContentsObject(self):
@@ -118,7 +126,15 @@ class TestRooms(unittest.TestCase):
         room.AddToContents(Body(name='Steve'))
         room.AddToContents(Body(name='Frank'))
         room.AddToContents(Body(name='Bob'))        
-        self.assertEqual(room.GetBodiesView(me),'\nAlso here: Steve, Frank and Bob.')   
+        self.assertEqual(room.GetBodiesView(me),'\nAlso here: Steve, Frank and Bob.')
+        
+    def testRoomisaRoom(self):
+        room = Room()
+        self.assertEqual(room.isa('room'), True)
+        
+    def testRoomisaBody(self):
+        room = Room()
+        self.assertEqual(room.isa('body'),False)   
                     
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

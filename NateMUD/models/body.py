@@ -56,7 +56,7 @@ class Body(BaseObject, Container):
         self.posttitle = posttitle.title()
         self.desc_string = desc_string
         self.location = location #Location needs to be stored as an address. :\
-        self.room = WorldManager.GetRoom(self.location) 
+        self.room = None
 
     def Move(self,destination):
         self.location = destination

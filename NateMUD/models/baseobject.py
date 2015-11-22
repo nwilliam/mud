@@ -76,6 +76,13 @@ class BaseObject(object):
             return self.desc
         else:
             return 'There doesn\'t seem to be anything special about %s.' % (self.AShort())
+        
+    def isa(self,comparitor):
+        if self.__class__.__name__.lower() in comparitor.lower():
+            return True
+        else:
+            return False
+        
     
 
         

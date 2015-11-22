@@ -5,8 +5,6 @@ Created on Nov 8, 2015
 '''
 import pickle
 
-#from server import Server
-
 class RoomManager(object):
     '''
     This thing is scary.  There are a lot of ways for this to break.
@@ -15,7 +13,6 @@ class RoomManager(object):
     '''
     def __init__(self):
         self.rooms = dict()
-        # self.server = server #This is only here to support Error Handling
     
     def GetRoom(self,address):
         
