@@ -45,13 +45,7 @@ class RoomManager(object):
             
         #This room doesn't exist!  Raise an error.
         print "Unable to unpickle: %s" % loc
-        raise ValueError
-        return None   
-            
-        self.Register(address, room)
-        return room    
-            
-
+        return None
         
     def Register(self,address,room):
         self.rooms[address] = room
