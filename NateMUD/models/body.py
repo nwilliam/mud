@@ -54,15 +54,28 @@ class Body(BaseObject, Container):
         self.room = None
 
     def Move(self,destination):
+        try:
+            newRoom = WorldManager.GetRoom(destination)
+        except ValueError:
+            print '{} could not move from {} to {}.'.format(
+                        self.Noun(),self.location,destination)
+            return
+        
         self.location = destination
-        self.room = WorldManager.GetRoom(destination)
+        self.room = newRoom
 
     def GetRoom(self):
         if self.room:
-            return self.room
-        else:
-            return WorldManager.GetRoom(self.location)
-
+            if self.room.address == self.location:
+                return self.room
+        try:
+            self.room = WorldManager.GetRoom(self.location)
+        except ValueError:
+            print '{} failed GetRoom() with location: {}'.format(
+                        self.Noun(),self.location)
+            self.Move(WorldManager.defaultAddress)
+        return self.room
+                
     def GetView(self):
         return self.GetRoom().GetView(self)
 
