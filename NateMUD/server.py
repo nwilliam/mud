@@ -4,6 +4,7 @@ Created on Nov 4, 2015
 @author: nwilliams
 '''
 import pickle
+
 from models.body import Body
 from world.world import WorldManager
 
@@ -16,8 +17,6 @@ class ServerClass(object):
 
     def __init__(self):
         self.clients = []
-        self.world = WorldManager
-        
         self.default_room = WorldManager.GetRoom('staff/default/000000')
         
     def onOpen(self,client):
