@@ -5,7 +5,7 @@ Created on Nov 4, 2015
 '''
 import pickle
 
-from models.body import Body
+from models.being import Being
 from world.world import WorldManager
 
 
@@ -49,7 +49,7 @@ class ServerClass(object):
         if body:
             client.body = body
         else:    
-            client.body = Body(client,name=msg,location=self.default_room.address)
+            client.body = Being(client=client,name=msg,location=self.default_room.address)
         
         print "%s is %s" % (client.peer,client.body.Name())
         client.body.Move(self.default_room.address)
@@ -66,9 +66,11 @@ class ServerClass(object):
         
         if client in self.clients:
             self.clients.remove(client)
-            self.WallAdmin('Deregistered Client: %s (%s), %s' % (client.body.Name(),client.peer, reason.value))
-            print 'Deregistered Client: %s (%s), %s' % (client.body.Name(),client.peer, reason.value)
-        
+            try:
+                self.WallAdmin('Deregistered Client: %s (%s), %s' % (client.body.Name(),client.peer, reason.value))
+                print 'Deregistered Client: %s (%s), %s' % (client.body.Name(),client.peer, reason.value)
+            except:
+                pass
     def WallAdmin(self,message):
         for c in self.clients:
             if c.isAdmin:

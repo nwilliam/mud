@@ -12,8 +12,7 @@ class Being(Body):
     
     '''
     def __init__(self, name='unnamed',pretitle='',posttitle='',**kwargs):
-        super(Being,self).__init__(noun=name.title(),adjs='', length=20, 
-                          width=15, height=72, weight=160, **kwargs)
+        super(Being,self).__init__(noun=name.title(),adjs='',**kwargs)
         self.name = name.title()
         self.pretitle = pretitle.title()
         self.posttitle = posttitle.title()
