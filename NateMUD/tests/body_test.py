@@ -42,6 +42,7 @@ class TestBodies(unittest.TestCase):
     def testBodyGetRoomWithBadRoom(self):
         self.body.location='test/2'
         self.assertEqual(self.body.GetRoom(),WorldManager.GetRoom('error/default'))
+
         
         
       

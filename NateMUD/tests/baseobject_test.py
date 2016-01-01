@@ -6,6 +6,7 @@ Created on Nov 7, 2015
 import unittest
 
 from models.baseobject import BaseObject
+from models.body import Body
 
 class TestBaseObject(unittest.TestCase):
 
@@ -61,9 +62,25 @@ class TestBaseObject(unittest.TestCase):
         obj = BaseObject('stone')
         self.assertEqual(obj.isa('baseobject'),True)
         
+    def testBaseObjectisaBaseObjectWithObject(self):
+        obj = BaseObject('stone')
+        self.assertTrue(obj.isa(BaseObject))
+        
     def testBaseObjectisaBody(self):
         obj = BaseObject('stone')
-        self.assertEqual(obj.isa('body'), False)        
+        self.assertEqual(obj.isa('body'), False)
+    
+    def testBaseObjectisaBodyWithObject(self):
+        obj = BaseObject('stone')
+        self.assertFalse(obj.isa(Body))
+        
+    def testBodyisaBaseObject(self):
+        body = Body()
+        self.assertTrue(body.isa('baseobject'))
+        
+    def testBodyisaBaseObjectwithObject(self):
+        body = Body()
+        self.assertTrue(body.isa(BaseObject))  
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
