@@ -54,7 +54,7 @@ class BaseObject(object):
             return self.article
         elif self.isPlural:
             return 'some'
-        elif self.Short()[0] in 'aeiou':
+        elif self.Short()[0].lower() in 'aeiou':
             return 'an'
         else:
             return 'a'
@@ -78,10 +78,14 @@ class BaseObject(object):
             return 'There doesn\'t seem to be anything special about %s.' % (self.AShort())
         
     def isa(self,comparitor):
-        if self.__class__.__name__.lower() in comparitor.lower():
-            return True
+        if isinstance(comparitor, str):
+            for kls in self.__class__.__mro__:
+                if comparitor.lower() in kls.__name__.lower():
+                    return True
+            else:
+                return False
         else:
-            return False
+            return comparitor in self.__class__.__mro__
         
     
 
