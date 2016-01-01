@@ -6,6 +6,8 @@ Created on Nov 22, 2015
 
 def BuildCommaSeperatedList(listOfStrings):
     listOfStrings = [stri.strip() for stri in listOfStrings]
+    if not listOfStrings:
+        return []
     if len(listOfStrings) > 1:
         last = listOfStrings.pop()
         returnString = ', '.join(listOfStrings).strip(', ')
