@@ -5,9 +5,9 @@ Created on Nov 8, 2015
 '''
 import pickle
 
-from utils import stringutils
 from models.baseobject import BaseObject
 from models.container import Container
+from utils import stringutils
 
 
 class Room(BaseObject,Container):
@@ -48,7 +48,6 @@ class Room(BaseObject,Container):
         super(Room,self).__init__(**kwargs)
         self.title=title.title() #lol
         self.desc=desc
-        self.contents = list()
         self.size = size
         self.weather = weather
         self.element = element
@@ -58,45 +57,46 @@ class Room(BaseObject,Container):
         self.isCovered = isCovered
         self.address = address
 
+    def Title(self):
+        return self.title
 
-
-    # This whole thing is fucking stupid.  The parser should be building this,
-    # not the room object itself.  What should I return from here?  I guess
-    # I could simply have methods to return the properties of the room.
     def GetView(self,bodyRequesting=None):
-        roomView = '[%s]\n' % self.title
-        roomView += '%s ' % self.desc
+        '''
+        Still not 100% sure I like this.  It's.. pretty hardcoded.
+        Eventually I would like to do things like,
+        "[Room]
+        This is a room.  There is stuff in it.  It has things, and
+        maybe other things.  I don't know what else to say here
+        but I need a few lines.  Bob leans against the bar, Fred
+        is sitting on a barstool.  Frank and Steve are also here.
+        You also see a goddamned monkey hiding behind the couch 
+        and a wooden spork on the floor.
+        Obvious Exits: North, South, and East
+        "
+        '''
+        roomView = '[%s]\n' % self.Title()
+        roomView += '%s ' % self.Desc()
         if bodyRequesting:
-            roomView += self.GetObjectsView()
-            roomView += self.GetBodiesView(bodyRequesting)
-            roomView += self.GetExitsView()
+            items = [it.AShort() for it in self.ItemContents() if not it.isa('CardinalExit') and it.isVisible]
+            items += [be.AShort() for be in self.BeingContents() if be.isVisible and not be.name]
+            cards = [item.Short() for item in self.ItemContents() if item.isa('CardinalExit')]
+            people = [be.FullName() for be in self.BeingContents() if be.isVisible and be.name and be != bodyRequesting]
+            
+            if len(people) > 1:
+                verb = 'are'
+            else:
+                verb = 'is'
+            roomView += ('%s %s also here.\n' % (stringutils.BuildCommaSeperatedList(people),verb) if people else '')
+            roomView += ('You also see %s.\n' % stringutils.BuildCommaSeperatedList(items) if items else '')
+            roomView += ('Obvious Exits: %s\n' % stringutils.BuildCommaSeperatedList(cards) if cards else '')
         return roomView
-    
-    def GetObjects(self):
-        return [obj for obj in self.GetContents() if not obj.isa('Body')]
-    
-    def GetObjectsView(self):
-        objShorts = [obj.AShort() for obj in self.GetObjects() if obj.isVisible and not obj.isa('CardinalExit')]
-        return ('You also see %s.' % stringutils.BuildCommaSeperatedList(objShorts)) if objShorts else ''
-    
-    def GetBodies(self):
-        return [body for body in self.GetContents() if body.isa('Body')]
-    
-    def GetBodiesView(self,bodyRequesting):
-        names = [body.FullName() for body in self.GetBodies() if body != bodyRequesting and body.isVisible]
-        return ('\nAlso here: %s.' % stringutils.BuildCommaSeperatedList(names)) if names else ''
-    
-    def GetExits(self):
-        return [exitobj for exitobj in self.GetContents() if exitobj.isa('CardinalExit,Exit')]
-    
-    def GetExitsView(self):
-        exits = [ex.Short() for ex in self.GetExits() if ex.isa("CardinalExit")]
-        return ('\nObvious exits: %s' % stringutils.BuildCommaSeperatedList(exits)) if exits else ''
-    
-    def GetCardinalExits(self):
-        return [exitobj for exitobj in self.GetExits() if exitobj.isa('CardinalExit')]
 
+    def BeingContents(self):
+        return filter(lambda x: x.isa('Being'),self.GetContents())
     
+    def ItemContents(self):
+        return filter(lambda x: not x.isa('Being'),self.GetContents())
+ 
     def Persist(self):
         filename = open('./persist/world/rooms/' + self.address + '.room','w')
         pickle.dump(self,filename)
@@ -105,6 +105,6 @@ class Room(BaseObject,Container):
         pass
     
     def Tell(self,msg):
-        for being in self.GetBodies():
+        for being in self.BeingContents():
             if being.client:
                 being.Tell(msg)
