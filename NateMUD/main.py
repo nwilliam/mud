@@ -32,7 +32,7 @@ class MudClient(WebSocketServerProtocol):
         elif msg.startswith('l'): #look
             if len(msg.split(' ')) > 1:
                 for obj in self.body.GetRoom().GetContents():
-                    if obj.Noun() == msg.split(' ')[1]:
+                    if obj.Noun().lower() == msg.split(' ')[1].lower():
                         print 'Found: %s' % obj.Noun()
                         self.Tell(obj.Desc())
                         break
@@ -44,8 +44,8 @@ class MudClient(WebSocketServerProtocol):
         elif msg.startswith('go'): #go
             splitMsg = msg.split(' ')
             if len(splitMsg) > 1:
-                for obj in self.body.GetRoom().GetExits():
-                    if splitMsg[1] == obj.Noun():
+                for obj in self.body.GetRoom().ItemContents():
+                    if splitMsg[1].lower() == obj.Noun().lower():
                         obj.DoExit(self.body)
                         break
             else:
@@ -60,6 +60,8 @@ class MudClient(WebSocketServerProtocol):
         self.server.onClose(self,reason)
     
     def Tell(self,msg):
+        #Le Hack.
+        msg = msg.replace('\n','<br />')
         self.sendMessage(msg)
 
 class MudServerFactory(WebSocketServerFactory):

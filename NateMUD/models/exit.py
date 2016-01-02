@@ -44,6 +44,7 @@ class Exit(BaseObject):
 class CardinalExit(Exit):
     def __init__(self,**kwargs):
         super(CardinalExit,self).__init__(**kwargs)
+        
 
 class PathfinderExit(Exit):
     pass
