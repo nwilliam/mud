@@ -3,14 +3,11 @@ Created on Nov 4, 2015
 
 @author: nwilliams
 
-
-I need to do a lot of things to get this thing working.
-@TODO: Create a Container Mixin class.
 '''
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 from twisted.internet import reactor
-
 from server import Server
+
 
 class MudClient(WebSocketServerProtocol):
     def onOpen(self):
@@ -23,6 +20,9 @@ class MudClient(WebSocketServerProtocol):
     def onLogin(self):
         pass
     
+    '''
+    I need to do this in the Server, not here.
+    '''
     def onMessage(self,msg,isBinary):
         if not self.LoginDone:
             self.server.onLogin(self,msg)
