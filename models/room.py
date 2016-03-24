@@ -1,8 +1,8 @@
-'''
+"""
 Created on Nov 8, 2015
 
 @author: nwilliams
-'''
+"""
 import pickle
 
 from models.baseobject import BaseObject
@@ -10,8 +10,8 @@ from models.container import Container
 from utils import stringutils
 
 
-class Room(BaseObject,Container):
-    '''
+class Room(BaseObject, Container):
+    """
     Room is just that, a room.  Room needs to be a container as well (Mixin).
     Should room be a BaseObject?  I don't think it should.  A room doesn't have
     a noun or adjectives.  
@@ -27,8 +27,8 @@ class Room(BaseObject,Container):
     Properties of a room: Size, Weather (store this here or on player?),
         Element(s)?, Temperature, Biome, ... I need a word for 'situation'..
         indoors, outdoors, 'exposed'? like a porch?
-    '''
-    #These are in "largest distance point-to-point", ie:
+    """
+    # These are in "largest distance point-to-point", ie:
     #    x----------------------------|
     #    |                            |
     #    |                            |
@@ -36,18 +36,20 @@ class Room(BaseObject,Container):
     #    |                            |
     #    |----------------------------y
     # point X to point Y would be the room size in feet.
-    room_sizes = {'tiny':4, 'very small':8, 'small':16, 'medium-small':32,
-                  'medium':64, 'medium-large':128, 'large':256, 'very_large':512,
-                  'huge':1024,'gigantic':2048,'limitless':4096 }
+    room_sizes = {'tiny': 4, 'very small': 8, 'small': 16, 'medium-small': 32,
+                  'medium': 64, 'medium-large': 128, 'large': 256, 'very_large': 512,
+                  'huge': 1024, 'gigantic': 2048, 'limitless': 4096}
 
-
-    def __init__(self,title='The Nebula',desc='The fires of creation around you, writhing gases and colors stretching into infinity.  You float through the awe-inspiring display with nary a way to escape or exit.',
-                 contents=None,size=room_sizes['medium'],weather=None,element=None,
-                 temperature=72,biome='deciduous forest',isIndoors=False,isCovered=False,
-                 address='staff/default/000000',**kwargs):
-        super(Room,self).__init__(**kwargs)
-        self.title=title.title() #lol
-        self.desc=desc
+    def __init__(self, title='The Nebula',
+                 desc='The fires of creation around you, writhing gases and colors stretching into infinity.  '
+                      'You float through the awe-inspiring display with nary a way to escape or exit.  A spark '
+                      'of thought flits through your mind, whispering "An error has occurred.  Please REPORT.',
+                 contents=None, size=room_sizes['medium'], weather=None, element=None,
+                 temperature=72, biome='deciduous forest', isIndoors=False, isCovered=False,
+                 address='staff/default/000000', **kwargs):
+        super(Room, self).__init__(contents, **kwargs)
+        self.title = title.title()  # lol
+        self.desc = desc
         self.size = size
         self.weather = weather
         self.element = element
@@ -60,8 +62,9 @@ class Room(BaseObject,Container):
     def Title(self):
         return self.title
 
-    def GetView(self,bodyRequesting=None):
-        '''
+    def GetView(self, bodyRequesting=None):
+        """
+        :param bodyRequesting: Being object
         Still not 100% sure I like this.  It's.. pretty hardcoded.
         Eventually I would like to do things like,
         "[Room]
@@ -73,7 +76,7 @@ class Room(BaseObject,Container):
         and a wooden spork on the floor.
         Obvious Exits: North, South, and East
         "
-        '''
+        """
         roomView = '[%s]\n' % self.Title()
         roomView += '%s ' % self.Desc()
         if bodyRequesting:
@@ -81,30 +84,30 @@ class Room(BaseObject,Container):
             items += [be.AShort() for be in self.BeingContents() if be.isVisible and not be.name]
             cards = [item.Short() for item in self.ItemContents() if item.isa('CardinalExit')]
             people = [be.FullName() for be in self.BeingContents() if be.isVisible and be.name and be != bodyRequesting]
-            
+
             if len(people) > 1:
                 verb = 'are'
             else:
                 verb = 'is'
-            roomView += ('%s %s also here.\n' % (stringutils.BuildCommaSeperatedList(people),verb) if people else '')
-            roomView += ('You also see %s.\n' % stringutils.BuildCommaSeperatedList(items) if items else '')
-            roomView += ('Obvious Exits: %s\n' % stringutils.BuildCommaSeperatedList(cards) if cards else '')
+            roomView += ('%s %s also here.\n' % (stringutils.BuildCommaSeparatedList(people), verb) if people else '')
+            roomView += ('You also see %s.\n' % stringutils.BuildCommaSeparatedList(items) if items else '')
+            roomView += ('Obvious Exits: %s\n' % stringutils.BuildCommaSeparatedList(cards) if cards else '')
         return roomView
 
     def BeingContents(self):
-        return filter(lambda x: x.isa('Being'),self.GetContents())
-    
+        return filter(lambda x: x.isa('Being'), self.GetContents())
+
     def ItemContents(self):
-        return filter(lambda x: not x.isa('Being'),self.GetContents())
- 
+        return filter(lambda x: not x.isa('Being'), self.GetContents())
+
     def Persist(self):
-        filename = open('./persist/world/rooms/' + self.address + '.room','w')
-        pickle.dump(self,filename)
-        
+        filename = open('./persist/world/rooms/' + self.address + '.room', 'w')
+        pickle.dump(self, filename)
+
     def Destroy(self):
         pass
-    
-    def Tell(self,msg):
+
+    def Tell(self, msg):
         for being in self.BeingContents():
             if being.client:
                 being.Tell(msg)

@@ -1,4 +1,4 @@
-'''
+"""
 Created on Nov 7, 2015
 
 @author: nwilliams
@@ -32,73 +32,69 @@ Created on Nov 7, 2015
     
     All Bodies are Containers.  I'll do this as a Mixin.
     
-'''
+"""
 from models.baseobject import BaseObject
 from models.container import Container
 from world.world import WorldManager
 
 
 class Body(BaseObject, Container):
-    '''
+    """
     Top-level Class inherited by Mob, Being, and Player.
     client=None,name='unnamed',pretitle='',posttitle='',
     desc_string='',location=None,**kwargs
-    '''
+    """
 
-    def __init__(self, client=None,desc_string='',
-                 location='staff/default/000000',**kwargs):
-        super(Body,self).__init__(length=20,width=15, height=72, weight=160, **kwargs)
+    def __init__(self, client=None, desc_string='',
+                 location='staff/default/000000', **kwargs):
+        super(Body, self).__init__(length=20, width=15, height=72, weight=160, **kwargs)
         self.client = client
         self.desc_string = desc_string
-        self.location = location #Location needs to be stored as an address. :\
+        self.location = location  # Location needs to be stored as an address. :\
         self.room = None
 
-    def Move(self,destination):
+    def Move(self, destination):
         newRoom = WorldManager.GetRoom(destination)
-        if newRoom:   
+        if newRoom:
             self.location = destination
             self.room = newRoom
         else:
             print '{} could not move from {} to {}.'.format(
-                        self.Noun(),self.location,destination)
+                self.Noun(), self.location, destination)
 
     def GetRoom(self):
         if self.room:
             if self.room.address == self.location:
                 return self.room
-        
+
         self.room = WorldManager.GetRoom(self.location)
-        
+
         if self.room:
             return self.room
         else:
             print '{} failed GetRoom() with location: {}'.format(
-                        self.Noun(),self.location)
+                self.Noun(), self.location)
             self.Move(WorldManager.defaultAddress)
-            
+
         return self.room
-                
+
     def GetView(self):
         return self.GetRoom().GetView(self)
 
-    def Possess(self,client):
+    def Possess(self, client):
         self.client = client
-    
-    def Unpossess(self,client):
+
+    def Unpossess(self, client):
         self.client = None
-        
-    def Tell(self,msg,**kwargs):
+
+    def Tell(self, msg, **kwargs):
         # I'm abstracting this a bit higher to reduce calls to
         # Body.Client.Tell() - also this can let me do some
         # formatting higher up if I need to.  Also, we can intercept
         # errors here and not try to do a Tell to a mob.
         if self.client:
-            self.client.Tell(msg,**kwargs)
-            
+            self.client.Tell(msg, **kwargs)
+
     def Persist(self):
         pass
-        #BE SURE TO DUMP SELF.ROOM OR YOU RISK SAVING THE WHOLE GODDAMN SHEBANG
-
-    
-        
-        
+        # BE SURE TO DUMP SELF.ROOM OR YOU RISK SAVING THE WHOLE GODDAMN SHEBANG

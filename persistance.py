@@ -1,13 +1,14 @@
-'''
+"""
 Created on Nov 22, 2015
 
 @author: nwilliams
-'''
+"""
 
 import pickle
 
+
 class Persister(object):
-    '''
+    """
     Saves things to binary, but only the things I want to save.
     
     Oh jesus this is going to burn.
@@ -28,37 +29,31 @@ class Persister(object):
     
     Can I load everything that I want to save into a dict?  What if I'm loading 
     objects into a dict?  I think that's cool.  Let's do that.
-    '''
-    
-    statekeys=[]
-    
+    """
+
+    statekeys = []
+
     def __init__(self, *args, **kwargs):
         pass
-        
+
     def Save(self):
-        
-        #this is just not going to work.
-        
+
+        # this is just not going to work.
+
         filename = 'persist/'
         filename += self.__class__.__name__ + '/'
         if self.address:
             filename += self.address + '/'
-        filename+=self.noun + '/'
+        filename += self.noun + '/'
         filename += '.' + self.__class__.__name__
-        
-        savefile = open(filename,'w')
-        
-        savedict = {'type':self.__class__.__name__}
-        
+
+        savefile = open(filename, 'w')
+
+        savedict = {'type': self.__class__.__name__}
+
         for key in self.statekeys:
             savedict[key] = self.__getattribute__(key)
-            
-        #it can't be that simple, can it?
-        
-        pickle.dump(savedict,savefile)    
-            
-            
-            
-            
-            
-            
+
+        # it can't be that simple, can it?
+
+        pickle.dump(savedict, savefile)

@@ -1,11 +1,12 @@
-'''
+"""
 Created on Nov 22, 2015
 
 @author: nwilliams
-'''
+"""
 
-def BuildCommaSeperatedList(listOfStrings):
-    listOfStrings = [stri.strip() for stri in listOfStrings]
+
+def BuildCommaSeparatedList(listOfStrings):
+    listOfStrings = [st.strip() for st in listOfStrings]
     if not listOfStrings:
         return []
     if len(listOfStrings) > 1:
