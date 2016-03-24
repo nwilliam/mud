@@ -1,0 +1,6 @@
+autobahn==0.13.0
+Django==1.9.4
+six==1.10.0
+Twisted==16.0.0
+txaio==2.2.2
+zope.interface==4.1.3
