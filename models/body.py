@@ -36,6 +36,7 @@ Created on Nov 7, 2015
 from models.baseobject import BaseObject
 from models.container import Container
 from world.world import WorldManager
+from channels.channel import ErrorChannel
 
 
 class Body(BaseObject, Container):
@@ -59,8 +60,7 @@ class Body(BaseObject, Container):
             self.location = destination
             self.room = newRoom
         else:
-            print '{} could not move from {} to {}.'.format(
-                self.Noun(), self.location, destination)
+            ErrorChannel.tell('{} could not move from {} to {}.'.format(self.Noun(), self.location, destination))
 
     def GetRoom(self):
         if self.room:
@@ -72,8 +72,7 @@ class Body(BaseObject, Container):
         if self.room:
             return self.room
         else:
-            print '{} failed GetRoom() with location: {}'.format(
-                self.Noun(), self.location)
+            ErrorChannel.tell('{} failed GetRoom() with location: {}'.format(self.Noun(), self.location))
             self.Move(WorldManager.defaultAddress)
 
         return self.room
@@ -84,7 +83,7 @@ class Body(BaseObject, Container):
     def Possess(self, client):
         self.client = client
 
-    def Unpossess(self, client):
+    def Unpossess(self):
         self.client = None
 
     def Tell(self, msg, **kwargs):

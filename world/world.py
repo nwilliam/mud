@@ -4,6 +4,7 @@ Created on Nov 8, 2015
 @author: nwilliams
 """
 import pickle
+from channels.channel import ErrorChannel
 
 
 class RoomManager(object):
@@ -47,7 +48,7 @@ class RoomManager(object):
             return room
 
         # This room doesn't exist!  Raise an error.
-        print "Unable to unpickle: %s" % loc
+        ErrorChannel.tell("Unable to unpickle: %s".format(loc))
         return None
 
     def Register(self, address, room):

@@ -7,6 +7,7 @@ import pickle
 
 from models.being import Being
 from world.world import WorldManager
+from channels.channel import ConnectionChannel
 
 
 class ServerClass(object):
@@ -23,7 +24,7 @@ class ServerClass(object):
         if client not in self.clients:
             self.WallAdmin('Registered Client: %s' % client.peer)
             self.clients.append(client)
-            print 'Registered Client: %s' % client.peer
+            ConnectionChannel.tell('Registered Client: %s' % client.peer)
 
         if not client.LoginDone:
             client.Tell('Enter a name:')
@@ -51,7 +52,7 @@ class ServerClass(object):
         else:
             client.body = Being(client=client, name=msg, location=self.default_room.address)
 
-        print "%s is %s" % (client.peer, client.body.Name())
+        ConnectionChannel.tell("%s is %s" % (client.peer, client.body.Name()))
         client.body.Move(self.default_room.address)
         client.body.GetRoom().AddToContents(client.body)
         client.body.GetRoom().Tell('%s just arrived.' % client.body.Name())
@@ -67,7 +68,7 @@ class ServerClass(object):
             self.clients.remove(client)
             try:
                 self.WallAdmin('Unregistered Client: %s (%s), %s' % (client.body.Name(), client.peer, reason.value))
-                print 'Unregistered Client: %s (%s), %s' % (client.body.Name(), client.peer, reason.value)
+                ConnectionChannel.tell('Unregistered Client: %s (%s), %s' % (client.body.Name(), client.peer, reason.value))
             except:
                 pass
 

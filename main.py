@@ -4,8 +4,12 @@ Created on Nov 4, 2015
 @author: nwilliams
 
 """
+import sys
+
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 from twisted.internet import reactor
+
+from channels.channel import UtilityChannel
 from server import Server
 
 
@@ -37,7 +41,7 @@ class MudClient(WebSocketServerProtocol):
             if len(msg.split(' ')) > 1:
                 for obj in self.body.GetRoom().GetContents():
                     if obj.Noun().lower() == msg.split(' ')[1].lower():
-                        print 'Found: %s' % obj.Noun()
+                        UtilityChannel.tell('Found: %s' % obj.Noun())
                         self.Tell(obj.Desc())
                         break
                 else:
@@ -52,6 +56,8 @@ class MudClient(WebSocketServerProtocol):
                     if splitMsg[1].lower() == obj.Noun().lower():
                         obj.DoExit(self.body)
                         break
+                else:
+                    self.Tell('You can\'t go %s!' % splitMsg[1])
             else:
                 self.Tell('Go where?')
 
@@ -76,6 +82,12 @@ class MudServerFactory(WebSocketServerFactory):
 
 
 if __name__ == '__main__':
-    factory = MudServerFactory('ws://localhost:9000')
+    try:
+        address = sys.argv[1]
+    except IndexError:
+        print "Run Address required (ws://address:port)"
+        sys.exit(1)
+    factory = MudServerFactory(address)
     listenWS(factory)
+    UtilityChannel.tell('Websocket Server Factory running on {}'.format(address))
     reactor.run()
