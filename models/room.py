@@ -107,7 +107,7 @@ class Room(BaseObject, Container):
     def Destroy(self):
         pass
 
-    def Tell(self, msg):
+    def Tell(self, msg, actor=None):
         for being in self.BeingContents():
-            if being.client:
+            if being.client and being != actor:
                 being.Tell(msg)

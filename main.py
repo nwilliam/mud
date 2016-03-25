@@ -15,7 +15,7 @@ from server import Server
 
 class MudClient(WebSocketServerProtocol):
     def __init__(self):
-        self.isAdmin = True
+        self.isAdmin = False
         self.server = Server
         self.LoginDone = False
         self.body = None
@@ -27,42 +27,8 @@ class MudClient(WebSocketServerProtocol):
     def onLogin(self):
         pass
 
-    """
-    I need to do this in the Server, not here.
-    """
-
     def onMessage(self, msg, isBinary):
-        if not self.LoginDone:
-            self.server.onLogin(self, msg)
-        elif msg.startswith("'"):  # say
-            self.server.Wall('%s says, "%s"' % (self.body.Name(), msg.strip("'")))
-
-        elif msg.startswith('l'):  # look
-            if len(msg.split(' ')) > 1:
-                for obj in self.body.GetRoom().GetContents():
-                    if obj.Noun().lower() == msg.split(' ')[1].lower():
-                        UtilityChannel.tell('Found: %s' % obj.Noun())
-                        self.Tell(obj.Desc())
-                        break
-                else:
-                    self.Tell('I don\'t see %s here.' % msg.split(' ')[1])
-            else:
-                self.Tell(self.body.GetRoom().GetView(self.body))
-
-        elif msg.startswith('go'):  # go
-            splitMsg = msg.split(' ')
-            if len(splitMsg) > 1:
-                for obj in self.body.GetRoom().ItemContents():
-                    if splitMsg[1].lower() == obj.Noun().lower():
-                        obj.DoExit(self.body)
-                        break
-                else:
-                    self.Tell('You can\'t go %s!' % splitMsg[1])
-            else:
-                self.Tell('Go where?')
-
-        else:
-            self.Tell('What?  I don\'t understand what "%s" means.' % msg)
+        self.server.onMessage(self, msg)
 
     def connectionLost(self, reason):
         WebSocketServerProtocol.connectionLost(self, reason)
@@ -83,11 +49,13 @@ class MudServerFactory(WebSocketServerFactory):
 
 if __name__ == '__main__':
     try:
-        address = sys.argv[1]
-    except IndexError:
-        print "Run Address required (ws://address:port)"
-        sys.exit(1)
+        address = 'ws://0.0.0.0:%s' % os.environ['PORT']
+    except:
+        try:
+            address = sys.argv[1]
+        except:
+            address = 'ws://0.0.0.0:9000'
+    print "Server Factory Running on {}".format(address)
     factory = MudServerFactory(address)
     listenWS(factory)
-    UtilityChannel.tell('Websocket Server Factory running on {}'.format(address))
     reactor.run()

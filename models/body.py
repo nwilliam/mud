@@ -47,12 +47,13 @@ class Body(BaseObject, Container):
     """
 
     def __init__(self, client=None, desc_string='',
-                 location='staff/default/000000', **kwargs):
+                 location='staff/default/000000', listeningTo={}, **kwargs):
         super(Body, self).__init__(length=20, width=15, height=72, weight=160, **kwargs)
         self.client = client
         self.desc_string = desc_string
         self.location = location  # Location needs to be stored as an address. :\
         self.room = None
+        self.listeningTo = {'Util': 100, 'Errs': 100, 'Conn': 100}
 
     def Move(self, destination):
         newRoom = WorldManager.GetRoom(destination)
@@ -60,7 +61,8 @@ class Body(BaseObject, Container):
             self.location = destination
             self.room = newRoom
         else:
-            ErrorChannel.tell('{} could not move from {} to {}.'.format(self.Noun(), self.location, destination))
+            ErrorChannel.tell('{} could not move from {} to {} (GetRoom doesn\'t exist!)'.format(
+                self.Noun(), self.location, destination), verbosity=10)
 
     def GetRoom(self):
         if self.room:

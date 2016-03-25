@@ -6,6 +6,7 @@ Created on Nov 8, 2015
 
 from models.baseobject import BaseObject
 from world.world import WorldManager
+from channels.channel import UtilityChannel
 
 
 class Exit(BaseObject):
@@ -24,7 +25,8 @@ class Exit(BaseObject):
         dest = WorldManager.GetRoom(self.destination)
 
         if dest:
-            # I need
+            UtilityChannel.tell('Moved: {} from {} to {}'.format(
+                actor.Name(), last.Title(), dest.Title()), verbosity=20)
             last.RemoveFromContents(actor)
             last.Tell('%s just went %s.' % (actor.Name(), self.Noun()))
 
