@@ -25,7 +25,7 @@ class Exit(BaseObject):
         dest = WorldManager.GetRoom(self.destination)
 
         if dest:
-            UtilityChannel.tell('Moved: {} from {} to {}'.format(
+            UtilityChannel.Tell('Moved: {} from {} to {}'.format(
                 actor.Name(), last.Title(), dest.Title()), verbosity=20)
             last.RemoveFromContents(actor)
             last.Tell('%s just went %s.' % (actor.Name(), self.Noun()))

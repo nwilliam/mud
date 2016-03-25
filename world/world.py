@@ -48,7 +48,7 @@ class RoomManager(object):
             return room
 
         # This room doesn't exist!  Raise an error.
-        ErrorChannel.tell("Unable to unpickle: %s".format(loc))
+        ErrorChannel.Tell("Unable to unpickle: %s".format(loc))
         return None
 
     def Register(self, address, room):

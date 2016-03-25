@@ -77,7 +77,7 @@ class Room(BaseObject, Container):
         Obvious Exits: North, South, and East
         "
         """
-        roomView = '[%s]\n' % self.Title()
+        roomView = '<span id=\'room_title\'>[%s]</span>\n' % self.Title()
         roomView += '%s ' % self.Desc()
         if bodyRequesting:
             items = [it.AShort() for it in self.ItemContents() if not it.isa('CardinalExit') and it.isVisible]

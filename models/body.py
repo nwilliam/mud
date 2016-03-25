@@ -35,8 +35,8 @@ Created on Nov 7, 2015
 """
 from models.baseobject import BaseObject
 from models.container import Container
-from world.world import WorldManager
 from channels.channel import ErrorChannel
+from world.world import WorldManager
 
 
 class Body(BaseObject, Container):
@@ -47,13 +47,13 @@ class Body(BaseObject, Container):
     """
 
     def __init__(self, client=None, desc_string='',
-                 location='staff/default/000000', listeningTo={}, **kwargs):
+                 location='staff/default/000000', listeningTo=None, **kwargs):
         super(Body, self).__init__(length=20, width=15, height=72, weight=160, **kwargs)
         self.client = client
         self.desc_string = desc_string
         self.location = location  # Location needs to be stored as an address. :\
         self.room = None
-        self.listeningTo = {'Util': 100, 'Errs': 100, 'Conn': 100}
+        self.listeningTo = {'Admin': 100, 'Util': 10, 'Error': 1, 'Conn': 100} or listeningTo
 
     def Move(self, destination):
         newRoom = WorldManager.GetRoom(destination)
@@ -61,7 +61,7 @@ class Body(BaseObject, Container):
             self.location = destination
             self.room = newRoom
         else:
-            ErrorChannel.tell('{} could not move from {} to {} (GetRoom doesn\'t exist!)'.format(
+            ErrorChannel.Tell('{} could not move from {} to {} (GetRoom doesn\'t exist!)'.format(
                 self.Noun(), self.location, destination), verbosity=10)
 
     def GetRoom(self):
@@ -74,7 +74,7 @@ class Body(BaseObject, Container):
         if self.room:
             return self.room
         else:
-            ErrorChannel.tell('{} failed GetRoom() with location: {}'.format(self.Noun(), self.location))
+            ErrorChannel.Tell('{} failed GetRoom() with location: {}'.format(self.Noun(), self.location))
             self.Move(WorldManager.defaultAddress)
 
         return self.room

@@ -7,7 +7,7 @@ import pickle
 
 from models.being import Being
 from world.world import WorldManager
-from channels.channel import ConnectionChannel, UtilityChannel
+from channels.channel import ConnectionChannel, UtilityChannel, AdminChannel
 
 
 class ServerClass(object):
@@ -25,7 +25,7 @@ class ServerClass(object):
         if client not in self.clients:
             self.WallAdmin('Registered Client: %s' % client.peer)
             self.clients.append(client)
-            ConnectionChannel.tell('Registered Client: %s' % client.peer)
+            ConnectionChannel.Tell('Registered Client: %s' % client.peer)
 
         if not client.LoginDone:
             client.Tell('Enter a name:')
@@ -35,7 +35,7 @@ class ServerClass(object):
             client.Tell('That name is not acceptable, please try again.')
             return
 
-        if msg.title() in [c.body.Name() for c in self.clients]:
+        if msg.title() in [c.body.Name() for c in self.clients if c.body]:
             client.Tell('Name is use, please try another.')
             return
 
@@ -49,7 +49,7 @@ class ServerClass(object):
             with open('persist/players/%s.name' % msg.title()) as f:
                 body = pickle.load(f)
         except:
-            ConnectionChannel.tell('Unable to unpickle {}, creating new body.'.format(msg.title()), 20)
+            ConnectionChannel.Tell('Unable to unpickle {}, creating new body.'.format(msg.title()), 20)
             pass
 
         if body:
@@ -57,7 +57,7 @@ class ServerClass(object):
         else:
             client.body = Being(client=client, name=msg, location=self.default_room.address)
 
-        ConnectionChannel.tell("%s is %s" % (client.peer, client.body.Name()))
+        ConnectionChannel.Tell("%s is %s" % (client.peer, client.body.Name()))
         client.body.Move(self.default_room.address)
         client.body.GetRoom().Tell('%s just arrived.' % client.body.Name())
         client.body.GetRoom().AddToContents(client.body)
@@ -72,10 +72,10 @@ class ServerClass(object):
         if client in self.clients:
             self.clients.remove(client)
             try:
-                ConnectionChannel.tell('Unregistered Client: %s (%s), %s' %
+                ConnectionChannel.Tell('Unregistered Client: %s (%s), %s' %
                                        (client.body.Name(), client.peer, reason.value))
             except:
-                ConnectionChannel.tell('Unregistered Client (%s), %s' %
+                ConnectionChannel.Tell('Unregistered Client (%s), %s' %
                                        (client.peer, reason.value))
 
     def onMessage(self, client, msg):
@@ -90,7 +90,7 @@ class ServerClass(object):
             if len(msg.split(' ')) > 1:
                 for obj in client.body.GetRoom().GetContents():
                     if obj.Noun().lower() == msg.split(' ')[1].lower():
-                        UtilityChannel.tell('Found: %s' % obj.Noun(), 90)
+                        UtilityChannel.Tell('Found: %s' % obj.Noun(), 90)
                         client.Tell(obj.Desc())
                         break
                 else:
@@ -113,6 +113,12 @@ class ServerClass(object):
         elif msg.startswith('chan'): #change listening channels
             splitMsg = msg.split(' ')
             if len(splitMsg) == 2:
+                if splitMsg[1].lower() in 'show':
+                    msg = 'Channel\t|\tVerbosity'
+                    for k, v in client.body.listeningTo.items():
+                        msg += '\n{}\t|\t{}'.format(k,v)
+                    client.Tell(msg)
+                    return
                 if splitMsg[1].title() in client.body.listeningTo.keys():
                     del client.body.listeningTo[splitMsg[1].title()]
                     client.Tell('Stopped listening to {} channel.'.format(splitMsg[1]))
@@ -134,12 +140,20 @@ class ServerClass(object):
             if not client.isAdmin:
                 return
             try:
-                newAdmin = msg.split(' ')[1]
+                newAdmin = msg.split(' ')[1].title()
             except IndexError:
                 client.Tell('You need to specify a name.')
                 return
-            self.adminList.append(newAdmin.title())
-            client.Tell('{} is now an admin.'.format(newAdmin))
+            self.adminList.append(newAdmin)
+            for c in self.clients:
+                if c.body and c.body.Name() == newAdmin:
+                    AdminChannel.Tell('{} has made {} an admin.'.format(client.body.Name(), newAdmin), 0)
+                    c.isAdmin = True
+                    c.Tell('{} has made you an administrator.'.format(client.body.Name()))
+                    client.Tell('{} is now an admin.'.format(newAdmin))
+                    break
+            else:
+                client.Tell('Could not find {}.'.format(newAdmin))
 
         else:
             client.Tell('What?  I don\'t understand what "%s" means.' % msg)

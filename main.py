@@ -9,7 +9,6 @@ import sys
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 from twisted.internet import reactor
 
-from channels.channel import UtilityChannel
 from server import Server
 
 
@@ -54,7 +53,7 @@ if __name__ == '__main__':
         try:
             address = sys.argv[1]
         except:
-            address = 'ws://0.0.0.0:9000'
+            address = 'ws://127.0.0.1:9000'
     print "Server Factory Running on {}".format(address)
     factory = MudServerFactory(address)
     listenWS(factory)
