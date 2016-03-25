@@ -79,6 +79,10 @@ class ServerClass(object):
                                        (client.peer, reason.value))
 
     def onMessage(self, client, msg):
+        """
+        All of this needs ripped out and stuffed into a parser.  For now its there to
+        test various functionality that I'm adding.  Think of it as a hacky-parser?
+        """
         if not client.LoginDone:
             self.onLogin(client, msg)
 
