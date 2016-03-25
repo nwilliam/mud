@@ -16,27 +16,28 @@ from server import Server
 class MudClient(WebSocketServerProtocol):
     def __init__(self):
         self.isAdmin = False
-        self.server = Server
         self.LoginDone = False
         self.body = None
         super(MudClient, self).__init__()
 
     def onOpen(self):
-        self.server.onOpen(self)
+        Server.onOpen(self)
 
     def onLogin(self):
         pass
 
     def onMessage(self, msg, isBinary):
-        self.server.onMessage(self, msg)
+        Server.onMessage(self, msg)
 
     def connectionLost(self, reason):
         WebSocketServerProtocol.connectionLost(self, reason)
-        self.server.onClose(self, reason)
+        Server.onClose(self, reason)
 
-    def Tell(self, msg):
+    def Tell(self, msg, pre=False):
         # Le Hack.
         msg = msg.replace('\n', '<br />')
+        if pre:
+            msg = '<span class=\'pre\'>' + msg + '</span>'
         self.sendMessage(msg)
 
 

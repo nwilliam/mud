@@ -115,13 +115,14 @@ class ServerClass(object):
 
         elif msg.startswith('chan'): #change listening channels
             splitMsg = msg.split(' ')
-            if len(splitMsg) == 2:
-                if splitMsg[1].lower() in 'show':
-                    msg = 'Channel\t|\tVerbosity'
+            if len(splitMsg) == 1:
+                    msg = ('Channel | Verbosity\n'
+                          '-------------------')
                     for k, v in client.body.listeningTo.items():
-                        msg += '\n{}\t|\t{}'.format(k,v)
-                    client.Tell(msg)
+                        msg += '\n{}{}|{}{}'.format(k, ('&nbsp;'*(8-len(k))), ('&nbsp;'*(10-len(str(v)))), v)
+                    client.Tell(msg,pre=True)
                     return
+            elif len(splitMsg) == 2:
                 if splitMsg[1].title() in client.body.listeningTo.keys():
                     del client.body.listeningTo[splitMsg[1].title()]
                     client.Tell('Stopped listening to {} channel.'.format(splitMsg[1]))
