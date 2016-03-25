@@ -23,7 +23,6 @@ class ServerClass(object):
 
     def onOpen(self, client):
         if client not in self.clients:
-            self.WallAdmin('Registered Client: %s' % client.peer)
             self.clients.append(client)
             ConnectionChannel.Tell('Registered Client: %s' % client.peer)
 
@@ -162,7 +161,7 @@ class ServerClass(object):
         else:
             client.Tell('What?  I don\'t understand what "%s" means.' % msg)
 
-    def WallAdmin(self, message, channel=None, verbosity=0):
+    def WallAdmin(self, message):
         for c in self.clients:
             if c.isAdmin:
                 c.Tell(message)
