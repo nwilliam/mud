@@ -53,7 +53,7 @@ class Body(BaseObject, Container):
         self.desc_string = desc_string
         self.location = location  # Location needs to be stored as an address. :\
         self.room = None
-        self.listeningTo = {'Admin': 100, 'Util': 10, 'Error': 1, 'Conn': 100} or listeningTo
+        self.listeningTo = {'Admin': 100, 'Util': 0, 'Error': 100, 'Conn': 10} or listeningTo
 
     def Move(self, destination):
         newRoom = WorldManager.GetRoom(destination)

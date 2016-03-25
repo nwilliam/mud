@@ -24,7 +24,7 @@ class ServerClass(object):
     def onOpen(self, client):
         if client not in self.clients:
             self.clients.append(client)
-            ConnectionChannel.Tell('Registered Client: %s' % client.peer)
+            ConnectionChannel.Tell('Registered Client: %s' % client.peer, 20)
 
         if not client.LoginDone:
             client.Tell('Enter a name:')
@@ -38,8 +38,9 @@ class ServerClass(object):
             client.Tell('Name is use, please try another.')
             return
 
-        if msg.title() in self.adminList:
-            client.isAdmin = True
+        #if msg.title() in self.adminList:
+        client.isAdmin = True
+        AdminChannel.Tell('Admin %s is now online.' % msg.title())
 
         body = None
 
@@ -57,6 +58,7 @@ class ServerClass(object):
             client.body = Being(client=client, name=msg, location=self.default_room.address)
 
         ConnectionChannel.Tell("%s is %s" % (client.peer, client.body.Name()))
+        client.Tell('Welcome, {}{}'.format(('Admin ' if client.isAdmin else ''), client.body.Name()))
         client.body.Move(self.default_room.address)
         client.body.GetRoom().Tell('%s just arrived.' % client.body.Name())
         client.body.GetRoom().AddToContents(client.body)
@@ -118,8 +120,11 @@ class ServerClass(object):
             if len(splitMsg) == 1:
                     msg = ('Channel | Verbosity\n'
                           '-------------------')
-                    for k, v in client.body.listeningTo.items():
-                        msg += '\n{}{}|{}{}'.format(k, ('&nbsp;'*(8-len(k))), ('&nbsp;'*(10-len(str(v)))), v)
+                    for k in sorted(client.body.listeningTo):
+                        msg += '\n{}{}|{}{}'.format(k,
+                                                    ('&nbsp;'*(8-len(k))),
+                                                    ('&nbsp;'*(10-len(str(client.body.listeningTo[k])))),
+                                                    client.body.listeningTo[k])
                     client.Tell(msg,pre=True)
                     return
             elif len(splitMsg) == 2:

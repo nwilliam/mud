@@ -12,7 +12,7 @@ class Channel(object):
                                      ' <span class=\'chanmsg\' id=\'chanmsg_{0}\'>{1}</span></span>'.format(
                                       self.name, msg),
             self, verbosity=verbosity)
-        print '{} | [{}] {}'.format(strftime('%Y-%m-%d %H:%M:%S', localtime()), self.name, msg)
+        print '{},[{}],[{:03d}],{}'.format(strftime('%Y-%m-%d %H:%M:%S', localtime()), self.name, verbosity, msg)
 
 UtilityChannel = Channel('Util')
 ErrorChannel = Channel('Error')
