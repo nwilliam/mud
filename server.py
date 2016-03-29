@@ -7,7 +7,8 @@ import pickle
 
 from models.being import Being
 from world.world import WorldManager
-from channels.channel import ConnectionChannel, UtilityChannel, AdminChannel
+from channels.channel import ConnectionChannel, AdminChannel
+from parsing.parser import Parser
 
 
 class ServerClass(object):
@@ -38,7 +39,7 @@ class ServerClass(object):
             client.Tell('Name is use, please try another.')
             return
 
-        #if msg.title() in self.adminList:
+        # if msg.title() in self.adminList:
         client.isAdmin = True
         AdminChannel.Tell('Admin %s is now online.' % msg.title())
 
@@ -48,7 +49,7 @@ class ServerClass(object):
         try:
             with open('persist/players/%s.name' % msg.title()) as f:
                 body = pickle.load(f)
-        except:
+        except IOError:
             ConnectionChannel.Tell('Unable to unpickle {}, creating new body.'.format(msg.title()), 20)
             pass
 
@@ -80,92 +81,10 @@ class ServerClass(object):
                                        (client.peer, reason.value))
 
     def onMessage(self, client, msg):
-        """
-        All of this needs ripped out and stuffed into a parser.  For now its there to
-        test various functionality that I'm adding.  Think of it as a hacky-parser?
-        """
         if not client.LoginDone:
             self.onLogin(client, msg)
-
-        elif msg.startswith("'") or msg.startswith('say'):  # say
-            client.body.GetRoom().Tell('%s says, "%s"' % (client.body.Name(), msg.strip("'")), client.body)
-            client.Tell('You say, "%s"' % (msg.strip("'")))
-
-        elif msg.startswith('l'):  # look
-            if len(msg.split(' ')) > 1:
-                for obj in client.body.GetRoom().GetContents():
-                    if obj.Noun().lower() == msg.split(' ')[1].lower():
-                        UtilityChannel.Tell('Found: %s' % obj.Noun(), 90)
-                        client.Tell(obj.Desc())
-                        break
-                else:
-                    client.Tell('I don\'t see %s here.' % msg.split(' ')[1])
-            else:
-                client.Tell(client.body.GetRoom().GetView(client.body))
-
-        elif msg.startswith('go'):  # go
-            splitMsg = msg.split(' ')
-            if len(splitMsg) > 1:
-                for obj in client.body.GetRoom().ItemContents():
-                    if splitMsg[1].lower() == obj.Noun().lower():
-                        obj.DoExit(client.body)
-                        break
-                else:
-                    client.Tell('You can\'t go %s!' % splitMsg[1])
-            else:
-                client.Tell('Go where?')
-
-        elif msg.startswith('chan'): #change listening channels
-            splitMsg = msg.split(' ')
-            if len(splitMsg) == 1:
-                    msg = ('Channel | Verbosity\n'
-                          '-------------------')
-                    for k in sorted(client.body.listeningTo):
-                        msg += '\n{}{}|{}{}'.format(k,
-                                                    ('&nbsp;'*(8-len(k))),
-                                                    ('&nbsp;'*(10-len(str(client.body.listeningTo[k])))),
-                                                    client.body.listeningTo[k])
-                    client.Tell(msg,pre=True)
-                    return
-            elif len(splitMsg) == 2:
-                if splitMsg[1].title() in client.body.listeningTo.keys():
-                    del client.body.listeningTo[splitMsg[1].title()]
-                    client.Tell('Stopped listening to {} channel.'.format(splitMsg[1]))
-                else:
-                    client.body.listeningTo[splitMsg[1].title()] = 100
-                    client.Tell('Started listening to {} channel at verbosity 100.'.format(splitMsg[1]))
-            elif len(splitMsg) > 2:
-                try:
-                    verbosity = int(splitMsg[2])
-                except:
-                    client.Tell('Verbosity Level must be an integer.')
-                    return
-                if splitMsg[1].title() not in client.body.listeningTo.keys():
-                    client.Tell('Started listening to {} channel.'.format(splitMsg[1].title()))
-                client.body.listeningTo[splitMsg[1].title()] = verbosity
-                client.Tell('Set {} verbosity to {}'.format(splitMsg[1].title(), verbosity))
-
-        elif msg.startswith('admin'):
-            if not client.isAdmin:
-                return
-            try:
-                newAdmin = msg.split(' ')[1].title()
-            except IndexError:
-                client.Tell('You need to specify a name.')
-                return
-            self.adminList.append(newAdmin)
-            for c in self.clients:
-                if c.body and c.body.Name() == newAdmin:
-                    AdminChannel.Tell('{} has made {} an admin.'.format(client.body.Name(), newAdmin), 0)
-                    c.isAdmin = True
-                    c.Tell('{} has made you an administrator.'.format(client.body.Name()))
-                    client.Tell('{} is now an admin.'.format(newAdmin))
-                    break
-            else:
-                client.Tell('Could not find {}.'.format(newAdmin))
-
         else:
-            client.Tell('What?  I don\'t understand what "%s" means.' % msg)
+            Parser.Parse(client, self.clients, msg)
 
     def WallAdmin(self, message):
         for c in self.clients:
