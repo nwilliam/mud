@@ -52,10 +52,12 @@ if __name__ == '__main__':
     try:
         address = 'ws://0.0.0.0:%s' % os.environ['PORT']
     except:
-        try:
-            address = sys.argv[1]
-        except:
-            address = 'ws://0.0.0.0:9000'
+        pass  # fallback to command line input
+    try:
+        address = sys.argv[1]
+    except IndexError:  # fallback to default
+        address = 'ws://0.0.0.0:9000'
+
     print "Server Factory Running on {}".format(address)
     factory = MudServerFactory(address)
     listenWS(factory)
